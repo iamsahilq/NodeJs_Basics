@@ -23,8 +23,9 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "prepare": "husky install",
-    "lint": "eslint",
-    "start": "nodemon --exec babel-node src/index.js"
+    "lint": "eslint src/*",
+    "build": "babel src/* -d dist",
+    "start": "nodemon --exec babel-node src/"
   },
   "author": "",
   "license": "ISC"
