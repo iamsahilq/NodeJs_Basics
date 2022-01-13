@@ -7,10 +7,16 @@ const router = express.Router();
 router.post('/', (req, res, next) => {
   try {
     const { basket = [] } = req.body;
+    if (!basket.length) {
+      const response = {};
+      response.message = 'Empty basket.';
+      response.status = 400;
+      return res.status(response.status).send(response);
+    }
     const data = generateReceipt(basket);
-    res.send(data);
+    return res.send(data);
   } catch (error) {
-    next(error);
+    return next(error);
   }
 });
 
