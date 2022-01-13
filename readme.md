@@ -15,7 +15,8 @@ Fetch employee data from "http://dummy.restapiexample.com/api/v1/employee" for g
 
 Takes an array of basket elements and process them for Tax calculation.
 
-Categories: [Book, Medical, Food]
+Categories: [Book, Medical, Food, Other].
+
 
 Expected Request : 
 `
