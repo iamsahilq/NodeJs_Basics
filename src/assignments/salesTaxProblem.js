@@ -82,24 +82,24 @@ const categories = {
 // ]
 const roundTax = (num) => (Math.ceil((num) * 20) / 20).toFixed(2);
 
-const calculateSalesTax = (price, category, qty = 1) => {
-  if (categories[category].exempt) return 0;
-  const txAmt = ((salesTaxRate * price) / 100) * qty;
-  const roundedVal = Number(roundTax((txAmt)));
-  return roundedVal;
-};
-
-const calculateImportTax = (price, qty = 1) => {
-  const txAmt = ((importTaxRate * price) / 100) * qty;
+const getTaxAmount = (price, rate, qty = 1) => {
+  const txAmt = ((rate * price) / 100) * qty;
   const roundedVal = Number(roundTax((txAmt)));
   return roundedVal;
 };
 
 const calculateTax = (item) => {
-  const salesTax = calculateSalesTax(item.shelfPrice, item.category, item.qty);
+  if (!categories[item.category]) {
+    return { invalid: `Invalid Category '${item.category}', available categories: ${Object.keys(categories).join(', ')}` };
+  }
+  let salesTax = 0;
+  if (!categories[item.category].exempt) {
+    salesTax = getTaxAmount(item.shelfPrice, salesTaxRate, item.qty);
+  }
+
   let importTax = 0;
   if (item.imported) {
-    importTax = calculateImportTax(item.shelfPrice, item.qty);
+    importTax = getTaxAmount(item.shelfPrice, importTaxRate, item.qty);
   }
   const totalTaxOnItem = (salesTax + importTax);
   const itemAmount = (item.shelfPrice + totalTaxOnItem);
@@ -120,13 +120,17 @@ const generateReceipt = (items = []) => {
   const receipt = [];
   items.forEach((item) => {
     const {
-      salesTax = 0, importTax = 0, totalTaxOnItem = 0, itemAmount = 0,
+      salesTax = 0, importTax = 0, totalTaxOnItem = 0, itemAmount = 0, invalid = null,
     } = calculateTax(item);
-    totalAmt += itemAmount;
-    totalTax += totalTaxOnItem;
-    receipt.push({
-      ...item, salesTax, importTax, totalTaxOnItem, itemAmount,
-    });
+    if (invalid) {
+      receipt.push({ ...item, invalid });
+    } else {
+      totalAmt += itemAmount;
+      totalTax += totalTaxOnItem;
+      receipt.push({
+        ...item, salesTax, importTax, totalTaxOnItem, itemAmount,
+      });
+    }
   });
   receipt.push({ 'Total Amount': (totalAmt).toFixed(2), 'Total Tax': (totalTax).toFixed(2) });
   return receipt;
