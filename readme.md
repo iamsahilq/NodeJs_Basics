@@ -15,7 +15,7 @@ Fetch employee data from "http://dummy.restapiexample.com/api/v1/employee" for g
 
 Takes an array of basket elements and process them for Tax calculation 
 
-Expected Req : 
+Expected Request : 
 `
 *{
     "basket": [
@@ -43,6 +43,7 @@ Expected Req :
     ]
 }*
 `
+
 Expected Response: 
 `
 *[
