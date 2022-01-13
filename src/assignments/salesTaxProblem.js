@@ -83,14 +83,16 @@ const categories = {
 const roundTax = (num) => (Math.ceil((num) * 20) / 20).toFixed(2);
 
 const getTaxAmount = (price, rate, qty = 1) => {
-  const txAmt = ((rate * price) / 100) * qty;
-  const roundedVal = Number(roundTax((txAmt)));
-  return roundedVal;
+  const txAmt = ((rate * Number(price)) / 100) * qty;
+  return Number(roundTax((txAmt)));
 };
 
 const calculateTax = (item) => {
   if (!categories[item.category]) {
     return { invalid: `Invalid Category '${item.category}', available categories: ${Object.keys(categories).join(', ')}` };
+  }
+  if (!item.shelfPrice || !Number(item.shelfPrice)) {
+    return { invalid: `Invalid shelfPrice '${item.shelfPrice}'` };
   }
   let salesTax = 0;
   if (!categories[item.category].exempt) {
@@ -125,8 +127,8 @@ const generateReceipt = (items = []) => {
     if (invalid) {
       receipt.push({ ...item, invalid });
     } else {
-      totalAmt += itemAmount;
-      totalTax += totalTaxOnItem;
+      totalAmt += Number(itemAmount);
+      totalTax += Number(totalTaxOnItem);
       receipt.push({
         ...item, salesTax, importTax, totalTaxOnItem, itemAmount,
       });
