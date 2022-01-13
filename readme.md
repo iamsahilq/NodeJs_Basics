@@ -13,7 +13,9 @@ Fetch employee data from "http://dummy.restapiexample.com/api/v1/employee" for g
 
 **_/salesTax/'_**
 
-Takes an array of basket elements and process them for Tax calculation 
+Takes an array of basket elements and process them for Tax calculation.
+
+Categories: [Book, Medical, Food]
 
 Expected Request : 
 `
